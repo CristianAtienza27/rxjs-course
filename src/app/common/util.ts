@@ -1,8 +1,9 @@
 import { Observable } from 'rxjs';
+import { Course } from '../model/course';
 
-export function createHttpObservable(url:string) {
-    return new Observable(observer => {
-      fetch('/api/courses')
+export function createHttpObservable(url:string): Observable<Course[]> {
+    return new Observable<Course[]>(observer => {
+      fetch(url)
       .then(response => {
         return response.json();
       })
