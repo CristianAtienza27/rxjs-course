@@ -40,14 +40,10 @@ export class CourseDialogComponent implements OnInit, AfterViewInit {
     ngOnInit() {
         this.form.valueChanges
             .pipe(
-                filter(() => this.form.valid)
+                filter(() => this.form.valid),
+                concatMap(changes => this.saveCourse(changes))
             )
-            .subscribe(changes => {
-
-                const saveCourses$ = this.saveCourse(changes);
-                
-                saveCourses$.subscribe();
-            });
+            .subscribe();
     }
 
     saveCourse(changes) {
