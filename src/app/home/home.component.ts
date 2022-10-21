@@ -23,8 +23,12 @@ export class HomeComponent implements OnInit {
 
         const courses$ = http$
             .pipe(
-                map((res) => Object.values(res["payload"]))
+                tap(() => console.log("Http ok")),
+                map((res) => Object.values(res["payload"]) ),
+                shareReplay()
             );
+
+        courses$.subscribe();
 
         this.beginnerCourses$ = courses$
             .pipe(
