@@ -15,11 +15,11 @@ export class AboutComponent implements OnInit {
 
   ngOnInit() {
 
-    const http$ = createHttpObservable('/api/courses');
+    // const http$ = createHttpObservable('/api/courses');
 
-    const sub = http$.subscribe(console.log);
+    // const sub = http$.subscribe(console.log);
 
-    setTimeout(() => sub.unsubscribe(), 0);
+    // setTimeout(() => sub.unsubscribe(), 0);
   }
 }
 
