@@ -3,10 +3,17 @@ import { Course } from '../model/course';
 
 export function createHttpObservable(url:string): Observable<any> {
     return new Observable<any>(observer => {
-      console.log(url);
+
       fetch(url)
       .then(response => {
-        return response.json();
+
+        if (response.ok) {
+          return response.json();
+        }
+        else {
+          observer.error('Request failed with status code: ' + response.status);
+        }
+
       })
       .then(body => {
         observer.next(body);
