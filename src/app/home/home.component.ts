@@ -26,13 +26,9 @@ export class HomeComponent implements OnInit {
                 tap(() => console.log("Http ok")),
                 map((res) => Object.values(res["payload"]) ),
                 shareReplay(),
-                catchError(err => {
-                    console.log('Error ocurred', err);
-                    return throwError(err);
-                }),
-                finalize(() => {
-                    console.log('Finalize executed..');
-                })
+                retryWhen(errors => errors.pipe(
+                    delayWhen(() => timer(2000))
+                ))
             );
 
         this.beginnerCourses$ = courses$
