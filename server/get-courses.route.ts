@@ -7,6 +7,7 @@ import {COURSES} from "./db-data";
 
 export function getAllCourses(req: Request, res: Response) {
 
+    /*
     const error = (Math.random() >= 0.5);
 
     if (error) {
@@ -14,13 +15,15 @@ export function getAllCourses(req: Request, res: Response) {
         res.status(500).json({message: 'random error occurred.'});
     }
     else {
+    */
 
-        setTimeout(() => {
+    setTimeout(() => {
 
-            res.status(200).json({payload:Object.values(COURSES)});
+        res.status(200).json({payload:Object.values(COURSES)});
 
-        }, 200);
-    }
+    }, 200);
+
+   // }
 }
 
 
