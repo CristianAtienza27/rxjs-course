@@ -11,9 +11,9 @@ import {
     concatMap,
     switchMap,
     withLatestFrom,
-    concatAll, shareReplay
+    concatAll, shareReplay, throttleTime
 } from 'rxjs/operators';
-import {merge, fromEvent, Observable, concat} from 'rxjs';
+import {merge, fromEvent, Observable, concat, forkJoin} from 'rxjs';
 import {Lesson} from '../model/lesson';
 import { createHttpObservable } from '../common/util';
 import { debug, RxJsLogginLevel, setRxJsLogginLevel } from '../common/debug';
@@ -43,27 +43,28 @@ export class CourseComponent implements OnInit, AfterViewInit {
 
         this.courseId = this.route.snapshot.params['id'];
 
-        this.course$ = createHttpObservable(`/api/courses/${this.courseId}`)
+        const course$ = createHttpObservable(`/api/courses/${this.courseId}`);
+
+        const lessons$ = this.loadLessons();
+
+        forkJoin(course$, lessons$)
             .pipe(
-                debug( RxJsLogginLevel.INFO, 'course value ')
-            );
-
-        setRxJsLogginLevel(RxJsLogginLevel.DEBUG);
-
+                tap(([course, lessons]) => {
+                    console.log('course', course);
+                    console.log('lessons', lessons);
+                })
+            )
+            .subscribe();
     }
 
     ngAfterViewInit() {
 
-        this.lessons$ = fromEvent<any>(this.input.nativeElement, 'keyup')
+        fromEvent<any>(this.input.nativeElement, 'keyup')
             .pipe(
                 map(event => event.target.value),
-                startWith(''),
-                debug(RxJsLogginLevel.TRACE, 'search '),
-                debounceTime(400),
-                distinctUntilChanged(),
-                switchMap(search => this.loadLessons(search)),
-                debug( RxJsLogginLevel.DEBUG, 'lessons value ')
-            );
+                throttleTime(500)
+            )
+            .subscribe(console.log);
     }
 
     loadLessons(search = ''): Observable<Lesson[]>{
